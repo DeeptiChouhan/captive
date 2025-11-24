@@ -1,2 +1,14 @@
 pytest
 playwright
+fastapi
+uvicorn[standard]
+python-multipart
+sqlmodel
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+celery[redis]
+pytest
+pytest-html
+aiofiles
+redis

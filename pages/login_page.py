@@ -1,5 +1,10 @@
+import json
+from pathlib import Path
 from playwright.sync_api import Page, expect
 import re
+
+from tests.conftest import BASE_URL
+
 
 class LoginPage:
     def __init__(self, page: Page):
@@ -66,6 +71,8 @@ class LoginPage:
                     self.page.wait_for_load_state("load", timeout=2000)
                 except Exception:
                     pass
+
+            
         except Exception:
             # Last resort: try a CSS text selector
             try:
@@ -191,3 +198,25 @@ class LoginPage:
                 pass
 
         return ""
+    def load_credentials(self):
+        """Load valid login credentials from valid.json file"""
+        file_path = Path("testdata/valid.json")
+        with file_path.open() as f:
+            data = json.load(f)
+        return data["email"], data["password"]
+
+    def login(self, email: str | None = None, password: str | None = None, base_url: str | None = None):
+        """Perform login.
+
+        If `email` and `password` are not provided, they will be loaded from
+        `testdata/valid.json` via `load_credentials()`.
+        """
+        if email is None or password is None:
+            email, password = self.load_credentials()
+
+        if base_url:
+            self.goto(base_url)
+
+        self.enter_email(email)
+        self.enter_password(password)
+        self.click_login()
