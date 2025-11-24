@@ -5,11 +5,11 @@ from pages.dashboard_page import DashboardPage
 @pytest.mark.dashboard
 def test_dashboard_elements_visibility(page):
     # Step 1: Navigate to login page
-    page.goto("https://captive.encoreskydev.com/login")
+    # Navigate to login via the page object (LoginPage.login will navigate)
 
     # Step 2: Login
     login = LoginPage(page)
-    login.login("super.admin@icon.lu", "Test@123")
+    login.login()
 
     # Step 3: Initialize dashboard page
     dashboard = DashboardPage(page)

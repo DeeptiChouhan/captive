@@ -2,7 +2,9 @@ import os
 import pytest
 from playwright.sync_api import sync_playwright
 
-BASE_URL = "https://captive.encoreskydev.com/login"
+# Base host for the application under test. Page objects will append paths
+# (for example, '/login') as needed so tests can reuse `BASE_URL` consistently.
+BASE_URL = "https://captive.encoreskydev.com"
 
 
 @pytest.fixture(scope="function")
@@ -13,8 +15,10 @@ def page():
     or automated runs. Set environment variable `HEADLESS=false` to run in a
     visible browser when needed.
     """
-    headless_env = os.getenv("HEADLESS", "false").lower()
-    headless = False if headless_env in ("0", "false", "no") else False
+    headless_env = os.getenv("HEADLESS", "true").lower()
+    # Default to headless unless explicitly disabled by setting HEADLESS to
+    # 'false', '0', or 'no'. This makes CI and local runs consistent.
+    headless = False if headless_env in ("0", "false", "no") else True
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless)

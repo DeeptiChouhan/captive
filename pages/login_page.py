@@ -24,9 +24,19 @@ class LoginPage:
         self.error_password_required = page.locator("text=Password is required")
         self.error_wrong_password = page.locator("text=The password provided does not meet requirements.")
 
-    def goto(self, base_url: str = "https://captive.encoreskydev.com/login"):
-        # Navigate to the provided base_url or default login URL.
-        self.page.goto(base_url)
+    def goto(self, base_url: str = BASE_URL):
+        # Navigate to the login page constructed from the provided `base_url`.
+        # If the caller passed a full login URL (including '/login'), use it
+        # as-is; otherwise append '/login' to the base host.
+        try:
+            if base_url.rstrip().endswith('/login'):
+                url = base_url
+            else:
+                url = f"{base_url.rstrip('/')}/login"
+        except Exception:
+            url = base_url
+
+        self.page.goto(url)
 
     def enter_email(self, email: str):
         self.email_input.fill(email)
@@ -200,7 +210,7 @@ class LoginPage:
         return ""
     def load_credentials(self):
         """Load valid login credentials from valid.json file"""
-        file_path = Path("testdata/valid.json")
+        file_path = Path("data/login_valid.json")
         with file_path.open() as f:
             data = json.load(f)
         return data["email"], data["password"]
@@ -214,8 +224,15 @@ class LoginPage:
         if email is None or password is None:
             email, password = self.load_credentials()
 
+        # Ensure we are on the login page. If a specific `base_url` is provided
+        # use it; otherwise navigate using the default `BASE_URL` from
+        # `tests.conftest` (LoginPage.goto will append '/login' as needed).
         if base_url:
             self.goto(base_url)
+        else:
+            # call goto() with no args to use the default BASE_URL constant
+            # (which is the host) and navigate to '/login'.
+            self.goto()
 
         self.enter_email(email)
         self.enter_password(password)
