@@ -1,0 +1,22 @@
+{
+    "superAdmin": {
+        "email": "super.admin@icon.lu",
+        "password": "Test@123"
+    },
+    "admin": {
+        "email": "deepti.chouhan+1@encoresky.com",
+        "password": "test@123"
+    },
+    "partner": {
+        "email": "deepti.chouhan+2@encoresky.com",
+        "password": "test@123"
+    },
+    "customer": {
+        "email": "deepti.chouhan+3@encoresky.com",
+        "password": "test@123"
+    },
+    "technician": {
+        "email": "deepti.chouhan+4@encoresky.com",
+        "password": "test@123"
+    }
+}

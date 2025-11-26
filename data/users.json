@@ -1,0 +1,26 @@
+{
+    "gmail": {
+        "username": "deepti.chouhan@encoresky.com",
+        "app_password": "vfrv siss aizj jpgr"
+    },
+    "superAdmin": {
+        "email": "super.admin@icon.lu",
+        "password": "Test@123"
+    },
+    "new_admin": {
+        "firstName": "Deepti",
+        "middleName": "",
+        "lastName": "new_admin",
+        "email": "deepti.chouhan+1a@encoresky.com",
+        "userName": "deepti_new_admin_a",
+        "gender": "Female"
+    },
+    "new_partner": {
+        "firstName": "Deepti",
+        "middleName": "",
+        "lastName": "new_partner",
+        "email": "deepti.chouhan+1a@encoresky.com",
+        "userName": "deepti_new_partner_a",
+        "gender": "Female"
+    }
+}

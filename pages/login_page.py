@@ -37,29 +37,105 @@ class LoginPage:
             url = base_url
 
         self.page.goto(url)
-
-    def enter_email(self, email: str):
-        self.email_input.fill(email)
-
-    def enter_password(self, password: str):
-        self.password_input.fill(password)
-
-    def click_login(self):
-        # Click and wait briefly for possible feedback (alerts/toasts/validation)
+        # Ensure page has loaded and the login form is present (best-effort)
         try:
-            self.login_button.click()
+            self.page.wait_for_selector('input[placeholder="Email"], input[type="email"], input[name="email"]', timeout=5000)
         except Exception:
             try:
-                self.page.locator('button:has-text("Login")').click()
+                self.page.wait_for_load_state("networkidle", timeout=5000)
             except Exception:
-                return
+                pass
 
-        # Best-effort wait for any common feedback element to appear
+    def enter_email(self, email: str):
+        # Try several fallback locators if the primary placeholder locator fails
         try:
-            self.page.wait_for_selector('[role="alert"], .toast, .alert, .error, text=Invalid email, text=User not found, text=The password provided does not meet', timeout=2000)
+            self.email_input.fill(email)
+            return
         except Exception:
-            # no feedback appeared within timeout; proceed
             pass
+
+        fallbacks = [
+            lambda: self.page.get_by_placeholder("Email").fill(email),
+            lambda: self.page.locator('input[type="email"]').fill(email),
+            lambda: self.page.locator('[name="email"]').fill(email),
+        ]
+        for f in fallbacks:
+            try:
+                f()
+                return
+            except Exception:
+                continue
+        # Last-resort: type into the focused element
+        try:
+            self.page.keyboard.type(email)
+        except Exception:
+            pass
+
+    def enter_password(self, password: str):
+        try:
+            self.password_input.fill(password)
+            return
+        except Exception:
+            pass
+
+        fallbacks = [
+            lambda: self.page.get_by_placeholder("Password").fill(password),
+            lambda: self.page.locator('input[type="password"]').fill(password),
+            lambda: self.page.locator('[name="password"]').fill(password),
+        ]
+        for f in fallbacks:
+            try:
+                f()
+                return
+            except Exception:
+                continue
+        try:
+            self.page.keyboard.type(password)
+        except Exception:
+            pass
+
+    def click_login(self):
+
+        # Always click login
+        self.login_button.click()
+
+        try:
+            self.page.wait_for_load_state("networkidle", timeout=8000)
+        except:
+            pass
+
+        # If dashboard exists (common case)
+        try:
+            if self.page.get_by_text("Dashboard", exact=False).first.is_visible():
+                return
+        except:
+            pass
+
+        # If URL changed → login success
+        try:
+            if "/dashboard" in self.page.url or "/users" in self.page.url:
+                return
+        except:
+            pass
+
+        # If any known error appears → return and let test assert
+        errors = [
+            "User not found",
+            "Invalid email",
+            "Email is required",
+            "Password is required",
+            "does not meet requirements"
+        ]
+        for err in errors:
+            try:
+                if self.page.get_by_text(err, exact=False).first.is_visible():
+                    return
+            except:
+                continue
+
+        # Final safety wait (1 sec)
+        self.page.wait_for_timeout(1000)
+
 
     def click_forgot_password(self):
         # Try the primary locator, fall back to a text-based locator if needed,
@@ -237,3 +313,41 @@ class LoginPage:
         self.enter_email(email)
         self.enter_password(password)
         self.click_login()
+
+    def login_with_role(self, role: str, base_url: str | None = None):
+        """Perform login using only a role name.
+
+        The role is mapped to credentials stored in `data/login_valid.json`.
+        If a specific `base_url` is provided, it will be used for navigation;
+        otherwise the default `BASE_URL` from `tests.conftest` will be used.
+        """
+        # Read role-based credentials from the `data/user_login.json` file.
+        file_path = Path("data/user_login.json")
+        if not file_path.exists():
+            raise FileNotFoundError(f"Role credential file not found: {file_path}")
+
+        with file_path.open() as f:
+            data = json.load(f)
+
+        # Match role key case-insensitively and allow simple variants (underscores/spaces)
+        def _normalize(k: str) -> str:
+            return k.lower().replace("_", "").replace(" ", "")
+
+        match_key = None
+        for k in data.keys():
+            if _normalize(k) == _normalize(role):
+                match_key = k
+                break
+
+        if match_key is None:
+            raise ValueError(f"Credentials for role '{role}' not found in {file_path}")
+
+        entry = data.get(match_key, {})
+        email = entry.get("email")
+        password = entry.get("password")
+
+        if not email or not password:
+            raise ValueError(f"Incomplete credentials for role '{role}' in {file_path}")
+
+        # Call the main login method with the resolved credentials
+        self.login(email, password, base_url)

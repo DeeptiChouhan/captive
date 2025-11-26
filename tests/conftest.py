@@ -17,11 +17,27 @@ def page():
     """
     headless_env = os.getenv("HEADLESS", "true").lower()
     # Default to headless unless explicitly disabled by setting HEADLESS to
-    # 'false', '0', or 'no'. This makes CI and local runs consistent.
-    headless = False if headless_env in ("0", "false", "no") else True
+    # 'false', '0', or 'no'. Set `HEADLESS=false` to run a visible browser.
+    headless = False if headless_env in ("0", "false", "no") else False
+
+    # Allow slowing down Playwright actions for visual debugging
+    # e.g. `SLOW_MO=100` will wait 100ms between actions.
+    slow_mo = 0
+    try:
+        slow_mo = int(os.getenv("SLOW_MO", "0"))
+    except Exception:
+        slow_mo = 0
+
+    # Allow choosing browser: chromium, firefox or webkit
+    browser_name = os.getenv("BROWSER", "chromium").lower()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        if browser_name == "firefox":
+            browser = p.firefox.launch(headless=headless, slow_mo=slow_mo)
+        elif browser_name == "webkit":
+            browser = p.webkit.launch(headless=headless, slow_mo=slow_mo)
+        else:
+            browser = p.chromium.launch(headless=headless, slow_mo=slow_mo)
         # Allow navigation to sites with self-signed / invalid certs in test env
         context = browser.new_context(ignore_https_errors=True)
         page = context.new_page()
