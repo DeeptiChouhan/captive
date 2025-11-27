@@ -311,13 +311,13 @@ class LoginPage:
         Else → fallback to default login_valid.json
         """
 
-        # CASE 1: Load from users.json (new registered user)
+        # CASE 1: NEWLY REGISTERED USERS (users.json)
         if user_key:
-            email, password = self.load_user_credentials(user_key)
+            email, password = self.load_user_credentials_from_users_json(user_key)
 
-        # CASE 2: Load from login_valid.json
+        # CASE 2: DEFAULT SUPER ADMIN (login_valid.json)
         elif email is None or password is None:
-            email, password = self.load_user_credentials()
+            email, password = self.load_default_credentials()
 
         # Navigate to login page
         if base_url:
@@ -325,11 +325,29 @@ class LoginPage:
         else:
             self.goto()
 
-        # Perform login
+        # Fill login form
         self.enter_email(email)
         self.enter_password(password)
         self.click_login()
 
+    def load_user_credentials_from_users_json(self, user_key):
+        """Load credentials for newly registered users from users.json"""
+        import json
+        with open("data/users.json") as f:
+            data = json.load(f)
+
+        if user_key not in data:
+            raise KeyError(f"User key '{user_key}' not found in users.json")
+
+        return data[user_key]["email"], data[user_key]["password"]
+    
+    def load_default_credentials(self):
+        """Load default login credentials from login_valid.json"""
+        import json
+        with open("data/login_valid.json") as f:
+            data = json.load(f)
+
+        return data["email"], data["password"]
 
     def login_with_role(self, role: str, base_url: str | None = None):
         """Perform login using only a role name.
