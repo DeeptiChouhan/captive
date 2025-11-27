@@ -346,8 +346,9 @@ class LoginPage:
         import json
         with open("data/user_login.json") as f:
             data = json.load(f)
+            login_data = data["superAdmin"]
 
-        return data["email"], data["password"]
+        return login_data["email"], login_data["password"]
 
     def login_with_role(self, role: str, base_url: str | None = None):
         """Perform login using only a role name.
