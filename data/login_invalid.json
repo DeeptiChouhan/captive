@@ -1,6 +1,0 @@
-{
-  "blank_email": "",
-  "invalid_email_format": "abc123",
-  "wrong_password": "wrongpass",
-  "unregistered_email": "nouser@test.com"
-}
