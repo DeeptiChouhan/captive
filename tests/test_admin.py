@@ -14,11 +14,9 @@ def test_create_admin_and_set_password(page):
         data = json.load(f)
 
     admin_data = data["new_admin"]
-    dynamic_email = admin_data["email"]
-
     # Cleanup: delete user if exists
     try:
-        delete_user_if_exists(dynamic_email)
+        delete_user_if_exists(admin_data["email"])
     except Exception as e:
         print(f"DEBUG: delete_user_if_exists failed: {e}")
 

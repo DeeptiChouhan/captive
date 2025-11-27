@@ -1,8 +1,16 @@
 import re
+import json 
 import pytest
 from playwright.sync_api import Page, expect
 from tests.conftest import BASE_URL
 
+def load_test_data():
+    with open("data/user_login.json") as f:
+        data= json.load(f)
+    invalid_creds=data["invalid_logins"]
+    return data, invalid_creds
+
+data, invalid_creds = load_test_data()
 
 @pytest.mark.smoke
 def test_valid_login(page: Page):
@@ -15,8 +23,9 @@ def test_valid_login(page: Page):
     login_button = page.get_by_role("button", name="Login")
 
     # Enter credentials (example valid creds from test data)
-    email_input.fill("super.admin@icon.lu")
-    password_input.fill("Test@123")
+    
+    email_input.fill(data["superAdmin"]["email"])
+    password_input.fill(data["superAdmin"]["password"])
 
     # Submit
     login_button.click()

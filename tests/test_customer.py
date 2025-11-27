@@ -13,11 +13,10 @@ def test_create_customer_and_set_password(page):
         data = json.load(f)
 
     customer_data = data["new_customer"]
-    dynamic_email = customer_data["email"]
 
     # Cleanup: delete user if exists
     try:
-        delete_user_if_exists(dynamic_email)
+        delete_user_if_exists(customer_data["email"])
     except Exception as e:
         print(f"DEBUG: delete_user_if_exists failed: {e}")
 

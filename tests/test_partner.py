@@ -14,11 +14,10 @@ def test_create_partner_and_set_password(page):
         data = json.load(f)
 
     partner_data = data["new_partner"]
-    dynamic_email = partner_data["email"]
 
     # Cleanup: delete user if exists
     try:
-        delete_user_if_exists(dynamic_email)
+        delete_user_if_exists(partner_data["email"])
     except Exception as e:
         print(f"DEBUG: delete_user_if_exists failed: {e}")
 

@@ -14,7 +14,6 @@ def test_create_technician_and_set_password(page):
         data = json.load(f)
 
     technician_data = data["new_technician"]
-
     # Cleanup: delete user if exists
     try:
         delete_user_if_exists(technician_data["email"])

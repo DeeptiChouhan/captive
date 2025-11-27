@@ -18,5 +18,15 @@
     "technician": {
         "email": "deepti.chouhan+4@encoresky.com",
         "password": "test@123"
+    },
+    "subsidiaries": {
+        "email": "deepti.chouhan+5@encoresky.com",
+        "password": "test@123"
+    },
+    "invalid_logins": {
+        "blank_email": "",
+        "invalid_email_format": "abc123",
+        "wrong_password": "wrongpass",
+        "unregistered_email": "nouser@test.com"
     }
 }

@@ -14,11 +14,10 @@ def test_create_subsidiaries_and_set_password(page):
         data = json.load(f)
 
     subsidiaries_data = data["new_subsidiaries"]
-    dynamic_email = subsidiaries_data["email"]
 
     # Cleanup: delete user if exists
     try:
-        delete_user_if_exists(dynamic_email)
+        delete_user_if_exists(subsidiaries_data["email"])
     except Exception as e:
         print(f"DEBUG: delete_user_if_exists failed: {e}")
 

@@ -308,14 +308,14 @@ class LoginPage:
         """
         If user_key is provided → fetch email & password from users.json
         Else → use passed email/password
-        Else → fallback to default login_valid.json
+        Else → fallback to default user_login.json
         """
 
         # CASE 1: NEWLY REGISTERED USERS (users.json)
         if user_key:
             email, password = self.load_user_credentials_from_users_json(user_key)
 
-        # CASE 2: DEFAULT SUPER ADMIN (login_valid.json)
+        # CASE 2: DEFAULT SUPER ADMIN (user_login.json)
         elif email is None or password is None:
             email, password = self.load_default_credentials()
 
@@ -342,9 +342,9 @@ class LoginPage:
         return data[user_key]["email"], data[user_key]["password"]
     
     def load_default_credentials(self):
-        """Load default login credentials from login_valid.json"""
+        """Load default login credentials from user_login.json"""
         import json
-        with open("data/login_valid.json") as f:
+        with open("data/user_login.json") as f:
             data = json.load(f)
 
         return data["email"], data["password"]
@@ -352,7 +352,7 @@ class LoginPage:
     def login_with_role(self, role: str, base_url: str | None = None):
         """Perform login using only a role name.
 
-        The role is mapped to credentials stored in `data/login_valid.json`.
+        The role is mapped to credentials stored in `data/user_login.json`.
         If a specific `base_url` is provided, it will be used for navigation;
         otherwise the default `BASE_URL` from `tests.conftest` will be used.
         """
