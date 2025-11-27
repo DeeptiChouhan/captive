@@ -284,35 +284,52 @@ class LoginPage:
                 pass
 
         return ""
-    def load_credentials(self):
-        """Load valid login credentials from valid.json file"""
-        file_path = Path("data/login_valid.json")
-        with file_path.open() as f:
+    def load_user_credentials(self, user_key):
+        """Load email + password for any user from users.json"""
+        import json
+
+        with open("data/users.json") as f:
             data = json.load(f)
-        return data["email"], data["password"]
 
-    def login(self, email: str | None = None, password: str | None = None, base_url: str | None = None):
-        """Perform login.
+        if user_key not in data:
+            raise ValueError(f"{user_key} not found in users.json")
 
-        If `email` and `password` are not provided, they will be loaded from
-        `testdata/valid.json` via `load_credentials()`.
+        user = data[user_key]
+        email = user.get("email")
+        password = user.get("password")
+
+        if not email or not password:
+            raise ValueError(f"Missing email/password for {user_key} in users.json")
+
+        return email, password
+
+
+    def login(self, email=None, password=None, base_url=None, user_key=None):
         """
-        if email is None or password is None:
-            email, password = self.load_credentials()
+        If user_key is provided → fetch email & password from users.json
+        Else → use passed email/password
+        Else → fallback to default login_valid.json
+        """
 
-        # Ensure we are on the login page. If a specific `base_url` is provided
-        # use it; otherwise navigate using the default `BASE_URL` from
-        # `tests.conftest` (LoginPage.goto will append '/login' as needed).
+        # CASE 1: Load from users.json (new registered user)
+        if user_key:
+            email, password = self.load_user_credentials(user_key)
+
+        # CASE 2: Load from login_valid.json
+        elif email is None or password is None:
+            email, password = self.load_user_credentials()
+
+        # Navigate to login page
         if base_url:
             self.goto(base_url)
         else:
-            # call goto() with no args to use the default BASE_URL constant
-            # (which is the host) and navigate to '/login'.
             self.goto()
 
+        # Perform login
         self.enter_email(email)
         self.enter_password(password)
         self.click_login()
+
 
     def login_with_role(self, role: str, base_url: str | None = None):
         """Perform login using only a role name.

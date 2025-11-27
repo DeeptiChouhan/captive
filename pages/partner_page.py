@@ -35,5 +35,4 @@ class PartnerPage:
 
     def submit_partner_form(self):
         self.save_button.click()
-        self.page.wait_for_timeout(2000)
         return True

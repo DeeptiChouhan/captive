@@ -13,7 +13,8 @@
         "lastName": "new_admin",
         "email": "deepti.chouhan+1a@encoresky.com",
         "userName": "deepti_new_admin_a",
-        "gender": "Female"
+        "gender": "Female",
+        "password": "test@123"
     },
     "new_partner": {
         "firstName": "Deepti",
@@ -21,6 +22,34 @@
         "lastName": "new_partner",
         "email": "deepti.chouhan+1a@encoresky.com",
         "userName": "deepti_new_partner_a",
-        "gender": "Female"
+        "gender": "Female",
+        "password": "test@123"
+    },
+    "new_customer": {
+        "firstName": "Deepti",
+        "middleName": "",
+        "lastName": "new_customer",
+        "email": "deepti.chouhan+1a@encoresky.com",
+        "userName": "deepti_new_customer_a",
+        "gender": "Female",
+        "password": "test@123"
+    },
+    "new_subsidiaries": {
+        "firstName": "Deepti",
+        "middleName": "",
+        "lastName": "new_subsidiaries",
+        "email": "deepti.chouhan+1a@encoresky.com",
+        "userName": "deepti_new_subsidiaries_a",
+        "gender": "Female",
+        "password": "test@123"
+    },
+    "new_technician": {
+        "firstName": "Deepti",
+        "middleName": "",
+        "lastName": "new_technician",
+        "email": "deepti.chouhan+1a@encoresky.com",
+        "userName": "deepti_new_technician_a",
+        "gender": "Female",
+        "password": "test@123"
     }
 }
