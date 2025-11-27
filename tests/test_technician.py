@@ -14,22 +14,12 @@ def test_create_technician_and_set_password(page):
         data = json.load(f)
 
     technician_data = data["new_technician"]
-    gmail_user = data["gmail"]["username"]
-    gmail_pass = data["gmail"]["app_password"]
-
-    # Step 2: Make email and username dynamic
-    # (Keeps +1a but ensures uniqueness)
-    dynamic_email = "deepti.chouhan+1a@encoresky.com"
 
     # Cleanup: delete user if exists
     try:
-        delete_user_if_exists(dynamic_email)
+        delete_user_if_exists(technician_data["email"])
     except Exception as e:
         print(f"DEBUG: delete_user_if_exists failed: {e}")
-
-    # Apply dynamic email & username
-    technician_data["email"] = dynamic_email
-    technician_data["userName"] = "deepti_chouhan_1a"
 
     # Step 3: Login as Super Admin
     login = LoginPage(page)
@@ -52,8 +42,6 @@ def test_create_technician_and_set_password(page):
     open_invitation_and_set_password(
     page=page,
     email=technician_data["email"],
-    new_password="test@123"
+    password=technician_data["password"]
 )
-
-
     print("Technicians created & password set successfully →", technician_data["email"])
