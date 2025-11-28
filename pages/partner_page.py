@@ -18,7 +18,7 @@ class PartnerPage:
 
         self.save_button = page.get_by_role("button", name="Save")
 
-    def open_add_partner_page(self):
+    def add_partner(self):
         self.users_menu.click()
         self.partners_menu.click()
         self.add_button.click()

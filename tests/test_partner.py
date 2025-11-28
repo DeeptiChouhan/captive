@@ -29,7 +29,7 @@ def test_create_partner_and_set_password(page):
 
     # Step 4: Create Admin
     admin_page = PartnerPage(page)
-    admin_page.open_add_partner_page()
+    admin_page.add_partner()
     admin_page.fill_partner_form(partner_data)
     success = admin_page.submit_partner_form()
 
