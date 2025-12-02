@@ -4,3 +4,4 @@ credentials.json
 .env
 __pycache__/
 .vscode/
+start_server.bat
