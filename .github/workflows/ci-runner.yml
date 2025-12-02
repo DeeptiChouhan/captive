@@ -9,42 +9,80 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # -----------------------------------------------
+      # Checkout your repository
+      # -----------------------------------------------
       - name: Checkout repository
-        uses: actions/checkout@v4   # updated
+        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      # -----------------------------------------------
+      # Setup Python
+      # -----------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
-      - name: Install ubuntu dependencies for Playwright
+      # -----------------------------------------------
+      # Install Python dependencies
+      # -----------------------------------------------
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+          # Install google API + requests explicitly
+          pip install google-auth google-auth-oauthlib google-api-python-client
+          pip install requests==2.31.0
+
+      # --------------------------------------------------
+      # Install Playwright Browser Dependencies (Ubuntu 24.04 FIX)
+      # --------------------------------------------------
+      - name: Install Playwright Browser Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 \
-            libxcomposite1 libxdamage1 libxrandr2 libgbm-dev libasound2 \
-            libpangocairo-1.0-0 libpango-1.0-0 libcairo2 libnss3 libxss1 \
-            fonts-liberation libappindicator3-1 libx11-xcb1 libxtst6 xvfb
-            
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+            libasound2t64 \
+            libnss3 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libxkbcommon0 \
+            libatspi2.0-0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libgbm1 \
+            libpango-1.0-0 \
+            libcairo2
+
+          # Install Playwright browsers
           playwright install --with-deps
 
-      - name: Debug received values
+      # -----------------------------------------------
+      # Debug received values
+      # -----------------------------------------------
+      - name: Debug inputs
         run: |
-          echo "Job ID: ${{ github.event.client_payload.job_id }}"
-          echo "Pytest target: ${{ github.event.client_payload.pytest_target }}"
+          echo "Job ID         : ${{ github.event.client_payload.job_id }}"
+          echo "Pytest Target  : ${{ github.event.client_payload.pytest_target }}"
 
-      - name: Run the selected test
+      # -----------------------------------------------
+      # Run the selected test
+      # -----------------------------------------------
+      - name: Run Pytest
         run: |
-          pytest ${{ github.event.client_payload.pytest_target }} \
+          pytest -v -s \
+            ${{ github.event.client_payload.pytest_target }} \
             --html=report.html \
             --self-contained-html
 
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4   # UPDATED
+      # -----------------------------------------------
+      # Upload HTML report (NEW v4 Artifact Action)
+      # -----------------------------------------------
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
         with:
           name: report
           path: report.html

@@ -19,7 +19,7 @@ def page():
         headless = True
     else:
         headless_env = os.getenv("HEADLESS", "true").lower()
-        headless = False if headless_env in ("0", "false", "no") else True
+        headless = False if headless_env in ("0", "false", "no") else False
 
     # Allow slowing down Playwright actions for visual debugging
     # e.g. `SLOW_MO=100` will wait 100ms between actions.

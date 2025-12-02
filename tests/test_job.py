@@ -5,7 +5,7 @@ from pages.login_page import LoginPage
 from pathlib import Path
 
 def load_job_data():
-    DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "job_data.json"
+    DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "job_data.json"
     with open(DATA_PATH, "r") as f:
         return json.load(f)
 
