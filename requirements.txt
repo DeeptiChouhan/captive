@@ -12,3 +12,4 @@ pytest
 pytest-html
 aiofiles
 redis
+requests==2.31.0
