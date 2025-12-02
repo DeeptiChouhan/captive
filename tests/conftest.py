@@ -15,10 +15,11 @@ def page():
     or automated runs. Set environment variable `HEADLESS=false` to run in a
     visible browser when needed.
     """
-    headless_env = os.getenv("HEADLESS", "true").lower()
-    # Default to headless unless explicitly disabled by setting HEADLESS to
-    # 'false', '0', or 'no'. Set `HEADLESS=false` to run a visible browser.
-    headless = False if headless_env in ("0", "false", "no") else False
+    if os.getenv("CI") == "true":
+        headless = True
+    else:
+        headless_env = os.getenv("HEADLESS", "true").lower()
+        headless = False if headless_env in ("0", "false", "no") else True
 
     # Allow slowing down Playwright actions for visual debugging
     # e.g. `SLOW_MO=100` will wait 100ms between actions.
