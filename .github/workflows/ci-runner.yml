@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [run-job]
 
+permissions:
+  contents: write
+  
 jobs:
   run-selected-test:
     runs-on: ubuntu-latest
