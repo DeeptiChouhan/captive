@@ -8,8 +8,13 @@ pydantic
 python-jose[cryptography]
 passlib[bcrypt]
 celery[redis]
-pytest
 pytest-html
 aiofiles
 redis
 requests==2.31.0
+
+# Google API (required for utils/email_utils.py)
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
