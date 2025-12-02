@@ -1,0 +1,23 @@
+name: Update Test List
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  update-test-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Generate automation_test_list.json
+        run: |
+          echo "Scanning tests..."
+          python .github/scripts/generate_test_list.py
+          
+      - name: Commit updated json
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated automation test list"
+          file_pattern: automation_test_list.json
