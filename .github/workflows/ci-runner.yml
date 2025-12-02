@@ -1,0 +1,61 @@
+name: Run Automation Test
+
+on:
+  repository_dispatch:
+    types: [run-job]
+
+jobs:
+  run-selected-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -----------------------------------------------
+      # Checkout your automation repository
+      # -----------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # -----------------------------------------------
+      # Setup Python
+      # -----------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # -----------------------------------------------
+      # Install dependencies
+      # -----------------------------------------------
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install --with-deps
+
+      # -----------------------------------------------
+      # Show received variables (debug)
+      # -----------------------------------------------
+      - name: Debug received values
+        run: |
+          echo "Job ID: ${{ github.event.client_payload.job_id }}"
+          echo "Pytest target: ${{ github.event.client_payload.pytest_target }}"
+
+      # -----------------------------------------------
+      # Run the selected test dynamically
+      # -----------------------------------------------
+      - name: Run the selected test
+        id: run_test
+        run: |
+          pytest ${{ github.event.client_payload.pytest_target }} \
+            --html=report.html \
+            --self-contained-html
+
+      # -----------------------------------------------
+      # Upload HTML report as artifact for backend
+      # -----------------------------------------------
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          path: report.html
+
