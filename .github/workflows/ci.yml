@@ -32,6 +32,11 @@ jobs:
       - name: Install Playwright browsers
         run: |
           python -m playwright install --with-deps
+      
+      - name: Restore Gmail API Credentials
+        run: |
+          echo "${{ secrets.GMAIL_CREDENTIALS_JSON }}" | sed 's/\\"/"/g' > credentials.json
+          echo "${{ secrets.GMAIL_TOKEN_JSON }}" | sed 's/\\"/"/g' > token.json
 
       - name: Run Pytest
         run: |
