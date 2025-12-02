@@ -1,5 +1,5 @@
 token.json
-*.json
+#*.json
 credentials.json
 .env
 __pycache__/
