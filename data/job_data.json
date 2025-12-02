@@ -1,0 +1,19 @@
+{
+    "orderNumber": "ORD-12345",
+    "technician": "ERP0000005 - Deepti technician",
+    "customer": "ERP0000006 - Deepti Cutomer",
+    "subsidiary": "ERP0000007 - Deepti Subsidiary",
+    "address": "350, Vijay Nagar, Scheme 54 PU4, Indore",
+    "vehicle1": {
+        "licensePlate": "MP09AA1111",
+        "vin": "VIN1111",
+        "brand": "Maruti",
+        "type": "SUV"
+    },
+    "vehicle2": {
+        "licensePlate": "MP09AA2222",
+        "vin": "VIN2222",
+        "brand": "Hyundai",
+        "type": "Sedan"
+    }
+}

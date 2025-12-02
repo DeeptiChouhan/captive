@@ -2,11 +2,10 @@ import json
 import time
 from pages.job_page import JobPage
 from pages.login_page import LoginPage
-from pathlib import Path
+
 
 def load_job_data():
-    DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "job_data.json"
-    with open(DATA_PATH, "r") as f:
+    with open("data/job_data.json", "r") as f:
         return json.load(f)
 
 def login_as_super_admin(page):
